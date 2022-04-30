@@ -1,15 +1,11 @@
 import discord
 from discord.ext import commands
 from config import settings
-import json
 import requests
 from bs4 import BeautifulSoup
-import csv
-import random
 from faker import Factory
 from random import randint
 import asyncio
-import time
 
 a=[]
 fake = Factory.create()
