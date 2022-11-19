@@ -45,7 +45,7 @@ bot = discord.Bot()
 async def on_ready():
     print("start hey")
     while True:
-        asyncio.run_coroutine_threadsafe(send_anime(969655683156959322), bot.loop)
+        asyncio.run_coroutine_threadsafe(send_anime(channel_id), bot.loop)
         await asyncio.sleep(300)
     
 
