@@ -7,6 +7,10 @@ from faker import Factory
 from random import randint
 import asyncio
 
+
+
+
+
 a=[]
 fake = Factory.create()
 
@@ -35,8 +39,7 @@ async def send_anime(channel_id: int):
     embed.set_image(url = a[p][3]) 
     await channel.send(embed=embed)
 
-
-bot = commands.Bot(command_prefix = settings['prefix'])
+bot = discord.Bot()
 
 @bot.event
 async def on_ready():
@@ -46,15 +49,14 @@ async def on_ready():
         await asyncio.sleep(300)
     
 
-@bot.command()
+@bot.slash_command(name = "r", description = "Say hello to the bot")
 async def r(ctx):
     
     a=parse()
     p=randint(0,len(a)-1)
     embed = discord.Embed(color = 0xB00B69, title = a[p][1], description=a[p][2]+f" года выпуска\n"+a[p][4]+f'\n'+"ссылка: "+a[p][0])
     embed.set_image(url = a[p][3]) 
-    await ctx.reply(embed = embed) 
-
+    await ctx.respond(embed = embed) 
 
 
 bot.run(settings['token'])
