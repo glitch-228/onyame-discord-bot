@@ -1,9 +1,7 @@
 import discord
-from discord.ext import commands
 from config import settings
 import requests
 from bs4 import BeautifulSoup
-from faker import Factory
 from random import randint
 import asyncio
 
@@ -11,52 +9,40 @@ import asyncio
 
 
 
-a=[]
-fake = Factory.create()
 
-def parse():
 
-        url = f"https://animego.org/anime?sort=a.createdAt&direction=desc&type=animes&page={randint(1,97)}" #96
+
+def parse(all = []):
+        url = f"https://www.anime-planet.com/anime/all?page={randint(1,50)}" #49
         r = requests.get(url=url)
         soup = BeautifulSoup(r.content,'html.parser')
-        divs = soup.findAll("div", {"class":"animes-list-item media"})
+        divs = soup.findAll("ul", {"class":"cardDeck cardGrid"})
         for div in divs:
-            link = div.find("a",{"class":"d-block"}).get('href')
-            title = div.find("div",{"class":"h5 font-weight-normal mb-1"}).text
-            year = div.find("span",{"class":"anime-year mb-2"}).find('a',{"class":"text-link-gray text-underline"}).text
-            img = div.find("div",{"class":"anime-list-lazy lazy"}).get('data-original')
-            sd = div.find("div",{"class":"description d-none d-sm-block"}).text
-            all = []
-            all.append([link, title, year, img, sd])
+                link = "https://www.anime-planet.com"+div.find("a",{"class":"tooltip"}).get('href')
+                title = BeautifulSoup(div.find("a",{"class":"tooltip"}).get("title"),'html.parser').find("h5",{"class":"theme-font"}).text
+                year = BeautifulSoup(div.find("a",{"class":"tooltip"}).get("title"),'html.parser').find("li",{"class":"iconYear"}).text
+                img = div.find("div",{"class":"crop"}).img.get("src")
+                sd = BeautifulSoup(div.find("a",{"class":"tooltip"}).get("title"),'html.parser').find("p").text
+                all.append([link, title, year, img, sd])
         return all
 
-
-async def send_anime(channel_id: int):
-    channel = bot.get_channel(channel_id)
-    a=parse()
-    p=randint(0,len(a)-1)
-    embed = discord.Embed(color = 0xB00B69, title = a[p][1], description=a[p][2]+f" года выпуска\n"+a[p][4]+f'\n'+"ссылка: "+a[p][0])
-    embed.set_image(url = a[p][3]) 
-    await channel.send(embed=embed)
 
 bot = discord.Bot()
 
 @bot.event
 async def on_ready():
     print("start hey")
-    while True:
-        asyncio.run_coroutine_threadsafe(send_anime(channel_id), bot.loop)
-        await asyncio.sleep(300)
+
     
 
-@bot.slash_command(name = "r", description = "Say hello to the bot")
+@bot.slash_command(name = "r", description = "nice cock")
 async def r(ctx):
-    
-    a=parse()
+    a=[]
+    parse(a)
     p=randint(0,len(a)-1)
-    embed = discord.Embed(color = 0xB00B69, title = a[p][1], description=a[p][2]+f" года выпуска\n"+a[p][4]+f'\n'+"ссылка: "+a[p][0])
+    embed = discord.Embed(color = 0xB00B69, title = a[p][1], description=a[p][2]+f" year\n"+a[p][4]+f'\n'+"link: "+a[p][0])
     embed.set_image(url = a[p][3]) 
-    await ctx.respond(embed = embed) 
+    await ctx.respond(embed=embed) 
 
 
 bot.run(settings['token'])
