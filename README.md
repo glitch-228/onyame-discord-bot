@@ -1,2 +1,2 @@
 # onyame-discord-bot
-currently in work
+gives random anime on request
