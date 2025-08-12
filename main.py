@@ -1,10 +1,13 @@
 import discord
 from discord.ui import Button, View
-from config import settings
 import requests
 from bs4 import BeautifulSoup
 from random import randint
 import asyncio
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 
 
@@ -122,4 +125,4 @@ async def random(ctx, amount: int = 1):
     await ctx.respond(embed=embed, view=view)
 
 
-bot.run(settings['token'])
+bot.run(os.getenv('TOKEN'))
